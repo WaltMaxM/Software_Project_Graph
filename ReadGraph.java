@@ -26,7 +26,7 @@ public class ReadGraph {
 				m = Integer.parseInt(br.readLine());
 		    }catch(NumberFormatException e){
 		    	br.close();
-		    	throw new Exception("Format Error in the first line!");
+		    	throw new Exception("Format Error in the second line!");
 		    }
 			for(int i=0;i<n;i++) {
 				graph.addVertex(createCircle(i));
@@ -34,6 +34,11 @@ public class ReadGraph {
 			String line = "";
 			for(int i=0;i<m;i++) {
 				line = br.readLine();
+				if(line == null) {
+					br.close();
+					throw new Exception("There is not enaugh edge data in the file.\n"
+							+ "Either put "+(m-i)+" lines of edge data into your file or change \""+m+"\" in line 2 to \""+i+"\"!");
+				}
 				String parts [] = line.split(" ");
 				try {
 					addLineToGraph(parts, i, n);
@@ -63,12 +68,12 @@ public class ReadGraph {
 		    try{
 		    	information[i] = Integer.parseInt(parts[i]);
 		    }catch(NumberFormatException e){
-		    	throw new Exception("Format Error in the line "+number+3+"!");
+		    	throw new Exception("Format Error in the line "+(number+3)+"!");
 
 		    }
 		}
 		if(information[0]>size || information[1]>size) {
-	    	throw new Exception("Format Error in the line "+number+3+"!");
+	    	throw new Exception("Format Error in the line "+(number+3)+"!");
 		}
 		Line l = new Line(getByNumber(information[0]), getByNumber(information[1]), information[2]);
 		graph.addEdge(l, getByNumber(information[0]), getByNumber(information[1]));
