@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -64,6 +63,7 @@ public class DrawPanel extends JPanel {
 			}
 			repaint();
 		} catch (Exception e) {
+			graph = new Graph<Circle,Line>();
 			throw e;
 		}
 	}
@@ -261,5 +261,4 @@ public class DrawPanel extends JPanel {
 		}
 		return null;
 	}
-
 }

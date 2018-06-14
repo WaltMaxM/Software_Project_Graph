@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Set;
 /*
  * Tests: see DrawPanel
- * test
+ * 
  */
 public class ReadGraph {
 	private static Graph<Circle, Line> graph = new Graph<Circle, Line>();
