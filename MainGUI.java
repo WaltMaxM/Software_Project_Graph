@@ -52,8 +52,13 @@ public class MainGUI {
 				int result = fileChooser.showOpenDialog(btnReadFile);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
-					drawPanel.readIn(selectedFile.getAbsolutePath());
-					System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+					
+					try {
+						drawPanel.readIn(selectedFile.getAbsolutePath());
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
 					// drawPanel.drawGraph(selectedFile.getAbsolutePath());
 				} else {
 					System.out.println("Open command cancelled by user.");
@@ -125,7 +130,10 @@ public class MainGUI {
 			public void actionPerformed(ActionEvent e) {
 				int cid1 = Integer.parseInt(txtC1.getText());
 				int cid2 = Integer.parseInt(txtC2.getText());
-				drawPanel.addLine(cid1, cid2, 0);
+				boolean works = drawPanel.addLine(cid1, cid2, 0);
+				if(!works) {
+					JOptionPane.showMessageDialog(null, "The Vertex Numbers are not valid!");
+				}
 				frame.dispose();
 			}
 		});

@@ -11,7 +11,7 @@ import java.util.Set;
 public class ReadGraph {
 	private static Graph<Circle, Line> graph = new Graph<Circle, Line>();
 	
-	public static Graph<Circle, Line> readGraph(String filename) {
+	public static Graph<Circle, Line> readGraph(String filename) throws Exception {
 		int n=0;
 		int m = 0;
 		try {
@@ -19,16 +19,14 @@ public class ReadGraph {
 		    try{
 		    	n = Integer.parseInt(br.readLine());
 		    }catch(NumberFormatException e){
-		    	System.out.println("Format Error in the first line!");
 		    	br.close();
-		    	return new Graph<Circle, Line>();
+		    	throw new Exception("Format Error in the first line!");
 		    }
 		    try{
 				m = Integer.parseInt(br.readLine());
 		    }catch(NumberFormatException e){
-		    	System.out.println("Format Error in the second line!");
 		    	br.close();
-		    	return new Graph<Circle, Line>();
+		    	throw new Exception("Format Error in the first line!");
 		    }
 			for(int i=0;i<n;i++) {
 				graph.addVertex(createCircle(i));
@@ -37,16 +35,19 @@ public class ReadGraph {
 			for(int i=0;i<m;i++) {
 				line = br.readLine();
 				String parts [] = line.split(" ");
-				if(!addLineToGraph(parts, i, n)) {
-			    	br.close();
-			    	return new Graph<Circle, Line>();
+				try {
+					addLineToGraph(parts, i, n);
+				}
+				catch (Exception e){
+					br.close();
+					throw e;
 				}
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found!");
+			throw new Exception("File not found!");
 		} catch (IOException e) {
-			System.out.println("Some fancy error occured. Unable to read the file!");
+			throw new Exception("Some fancy error occured. Unable to read the file!");
 		}
 		return graph;
 	}
@@ -56,24 +57,23 @@ public class ReadGraph {
 		int y = rand.nextInt(500);
 		return new Circle(10, x, y, number);
 	}
-	private static boolean addLineToGraph(String parts [], int number, int size) {
+	private static void addLineToGraph(String parts [], int number, int size) throws Exception {
 		int information [] = new int [parts.length];
 		for(int i=0;i<parts.length;i++) {
 		    try{
 		    	information[i] = Integer.parseInt(parts[i]);
 		    }catch(NumberFormatException e){
-		    	System.out.println("Format Error in the line "+number+3+"!");
-		    	return false;
+		    	throw new Exception("Format Error in the line "+number+3+"!");
+
 		    }
 		}
 		if(information[0]>size || information[1]>size) {
-	    	System.out.println("Format Error in the line! This vertex does not exist (too high number)"+number+3+". This vertex does not exist (too high number)");
-			return false;
+	    	throw new Exception("Format Error in the line "+number+3+"!");
 		}
 		Line l = new Line(getByNumber(information[0]), getByNumber(information[1]), information[2]);
 		graph.addEdge(l, getByNumber(information[0]), getByNumber(information[1]));
-		return true;
 	}
+	
     public static Circle getByNumber (int number) {
       	 Set<Circle> vSet = graph.vertexSet();
       	 for (Circle v : vSet) {

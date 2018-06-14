@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -24,6 +25,7 @@ public class DrawPanel extends JPanel {
  * The graph stores the graph structure.
  * circleArray saves only the vertices and is needed for adjusting the vertices.
  * 
+ * testS
  * 
  * 
  */	private Circle [] circleArray;
@@ -50,16 +52,20 @@ public class DrawPanel extends JPanel {
 	 * updating graph. We have to update algorithm as well, since graph is not modified but replaced by a new graph
 	 * We also update circleArray.
 	 */
-	public void readIn(String pathname) {
-		graph = ReadGraph.readGraph(pathname);
-		alg = new Algorithm(graph);
-		circleArray = new Circle[graph.getVSize()];
-		int i=0;
-		for(Circle c : graph.vertexSet()) {
-			circleArray[i] = c;
-			i++;
+	public void readIn(String pathname) throws Exception {
+		try {
+			graph = ReadGraph.readGraph(pathname);
+			alg = new Algorithm(graph);
+			circleArray = new Circle[graph.getVSize()];
+			int i=0;
+			for(Circle c : graph.vertexSet()) {
+				circleArray[i] = c;
+				i++;
+			}
+			repaint();
+		} catch (Exception e) {
+			throw e;
 		}
-		repaint();
 	}
 	public void removeGraph() {
 		graph = new Graph<Circle,Line>();
@@ -199,12 +205,13 @@ public class DrawPanel extends JPanel {
  * What if target of src does not exist?
  * What if vertex numbers are not unique?
  */
-	public void addLine(int src, int tar, int weight) {
+	public boolean addLine(int src, int tar, int weight) {
 		if (src < 0 || tar < 0 || src >= graph.getVSize() || tar >= graph.getVSize()) {
-			throw new IllegalArgumentException("Ids must be valid");
+			return false;
 		}
 		graph.addEdge(new Line(getByNumber(src), getByNumber(tar), weight), getByNumber(src), getByNumber(tar));
 		repaint();
+		return true;
 	}
 /*
  * What if algNumber does not exist?
