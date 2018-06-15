@@ -167,6 +167,7 @@ public class DrawPanel extends JPanel {
 			circleArray[i] = c;
 			i++;
 		}
+		this.performAlgorithm(1);
 		repaint();
 		return 0;
 	}
@@ -182,12 +183,29 @@ public class DrawPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 
 			HObject o = objList.removeFirst();
-			if (o.isVertex) {
-				Circle circ = ((HCircle) o).circ;
-				circ.setColor(o.c);
-			} else {
-				Line l = ((HLine) o).l;
-				l.setColor(o.c);
+			switch(o.whatType) {
+				case 0: {
+					Circle circ = ((HCircle) o).circ;
+					circ.setColor(o.c);	
+				}
+				case 1: {
+					Line l = ((HLine) o).l;
+					l.setColor(o.c);	
+				}
+					
+				case 2: {
+					Circle[] cArray = new Circle[graph.getVSize()];
+					for(int i=0;i<graph.getVSize();i++) {
+						cArray[i]=getByNumber(i);
+					}
+					double [][] sumOfForces = ((HCircleList) o).sumOfForces;
+					o.print();
+					for(int i=0;i<cArray.length;i++) {
+				//		System.out.println((int)sumOfForces[i][0]);
+						cArray[i].setX(cArray[i].getX()+(int)sumOfForces[i][0]);
+						cArray[i].setY(cArray[i].getY()+(int)sumOfForces[i][1]);	
+					}
+				}
 			}
 			if (objList.isEmpty()) {
 				timer.stop();
@@ -210,12 +228,26 @@ public class DrawPanel extends JPanel {
  * What if algNumber does not exist?
  */
 	public boolean performAlgorithm(int algNumber) {
-		
 		if(graph.getVSize() != 0) {
-			LinkedList<HObject> objList = alg.search(getByNumber(0), getByNumber(1), false);
-			timer = new Timer(1000, new TimerListener(objList));
-			timer.start();
-			return true;
+		switch(algNumber) {
+			case 0: {
+				LinkedList<HObject> objList = alg.search(getByNumber(0), getByNumber(1), false);
+				timer = new Timer(1000, new TimerListener(objList));
+				timer.start();
+				return true;
+			}
+			case 1: {
+				LinkedList<HObject> objList = alg.forceDirectedLayout();
+				System.out.println(objList.size());
+				timer = new Timer(500, new TimerListener(objList));
+				timer.start();
+				return true;
+			}
+			default: {
+				return true;
+			}
+		}
+
 		} else {
 			return false;
 		}

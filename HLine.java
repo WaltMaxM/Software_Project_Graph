@@ -6,6 +6,9 @@ public class HLine extends HObject{
 	public HLine (Color c, Line l) {
 		super(c);
 		this.l = l;
-		this.isVertex = false;
+		this.whatType = 0;
+	}
+	public void print() {
+		
 	}
 }

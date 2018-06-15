@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.TreeMap;
 /*
  * What if ...
@@ -18,6 +19,83 @@ public class Algorithm {
 	public Algorithm(Graph<Circle, Line> graph) {
 		this.graph = graph;
 	}
+	
+	
+	public LinkedList<HObject> forceDirectedLayout() {
+		//Careful! not initilised!
+		LinkedList<double[][]> endList = new LinkedList<double[][]>();
+		double [][]sumOfForces = new double[graph.getVSize()][2];
+		Circle[] cArray = new Circle[graph.getVSize()];
+		for(int i=0;i<graph.getVSize();i++) {
+			cArray[i]=getByNumber(i);
+			sumOfForces [i][0]=0;
+			sumOfForces [i][1]=0;
+		}
+		boolean stable = false;
+		int zaehler = 0;
+		while (!stable) {
+			zaehler++;
+			stable = true;
+			for(int i=0;i<graph.getVSize();i++) {
+				for(int j=i+1;j<graph.getVSize();j++) {
+					double [] hArray = computeVertexForce(cArray[i].getX(), cArray[i].getY(), cArray[j].getX(), cArray[j].getY(),i, j);
+					sumOfForces[i][0]+=hArray[0];
+					sumOfForces[i][1]+=hArray[1];
+					sumOfForces[j][0]+=hArray[2];
+					sumOfForces[j][1]+=hArray[3];
+				}
+			}
+			for(Line l:graph.edgeSet()) {
+				double [] hArray = computeEdgeForce(l.getC1().getX(), l.getC1().getY(), l.getC2().getX(), l.getC2().getY());
+				sumOfForces[l.getC1().getNumber()][0]+=hArray[0];
+				sumOfForces[l.getC1().getNumber()][1]+=hArray[1];
+				sumOfForces[l.getC2().getNumber()][0]+=hArray[2];
+				sumOfForces[l.getC2().getNumber()][1]+=hArray[3];
+			}
+			endList.addLast(sumOfForces);
+			for(int i=0;i<cArray.length;i++) {
+				if(cArray[i].getX() != cArray[i].getX()+(int)sumOfForces[i][0] || cArray[i].getY() != (int)sumOfForces[i][1]) {
+					stable = false;
+				}
+				sumOfForces[i][0]=0;
+				sumOfForces[i][1]=0;
+			}
+			if(zaehler>15) {
+				stable = true;
+			}
+		}
+		while(!endList.isEmpty()) {
+			objList.addLast(new HCircleList(Color.black, endList.removeFirst()));
+		}
+		return objList;
+	}
+	public double [] computeVertexForce(int fromX, int fromY, int toX, int toY, int number, int number2) {
+		double e_0 = 6*Math.pow(10, -5);
+		double distance =  (Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY-fromY, 2)));
+		double force =(1/(4*Math.PI*e_0*Math.pow(distance, 2)));
+		double force_from_x = -  (((force))*(toX-fromX));
+		double force_from_y = -  ((force)*(toY-fromY));
+		double force_to_x = - ((force)*(fromX-toX));
+		double force_to_y = -  ((force)*(fromY-toY));
+		double [] d = {force_from_x,force_from_y, force_to_x, force_to_y};
+		double [] zero = {0,0,0,0};
+		return d;
+	}	/*
+	 * force > 0: Kräfte nach innen
+	 * force < 0: Kräfte nach außen
+	 */
+	
+	public double [] computeEdgeForce(int fromX, int fromY, int toX, int toY) {
+		double distance =  (Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY-fromY, 2)));
+		double force = distance - 120;
+		double force_from_x =   (((force/8000d))*(toX-fromX));
+		double force_from_y = ((force/8000d)*(toY-fromY));
+		double force_to_x =  ((force/8000d)*(fromX-toX));
+		double force_to_y =  ((force/8000d)*(fromY-toY));
+		double [] d = {force_from_x,force_from_y, force_to_x, force_to_y};
+		double [] zero = {0,0,0,0};
+		return d;
+}
 	
 	
 	
@@ -157,4 +235,13 @@ public class Algorithm {
 		return objList;
 	}
 */
+	public Circle getByNumber(int number) {
+		Set<Circle> vSet = graph.vertexSet();
+		for (Circle v : vSet) {
+			if (number == v.getNumber()) {
+				return v;
+			}
+		}
+		return null;
+	}
 }

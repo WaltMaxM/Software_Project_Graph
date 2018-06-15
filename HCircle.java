@@ -6,6 +6,9 @@ public class HCircle extends HObject {
 	public HCircle (Color c, Circle circ) {
 		super(c);
 		this.circ = circ;
-		this.isVertex = true;
+		this.whatType = 1;
+	}
+	public void print() {
+		
 	}
 }

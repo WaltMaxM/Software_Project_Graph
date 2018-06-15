@@ -31,6 +31,14 @@ public class Line {
 		drawDirections(gx, xEnd, yEnd);
 	}
 	
+	public Circle getC1() {
+		return c1;
+	}
+
+	public Circle getC2() {
+		return c2;
+	}
+
 	public void drawDirections(Graphics2D gx,  int xEnd, int yEnd) {
 		gx.setColor(this.color);
 		Polygon arrowHead = new Polygon();
