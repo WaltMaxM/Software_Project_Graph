@@ -59,7 +59,7 @@ public class DrawPanel extends JPanel {
 			circleArray[i] = c;
 			i++;
 		}
-		repaint();
+		performAlgorithm(1);
 	}
 	public void removeGraph() {
 		graph = new Graph<Circle,Line>();
@@ -124,7 +124,7 @@ public class DrawPanel extends JPanel {
 		for (int i = 0; i < 10; i++) {
 			int x = rand.nextInt(500);
 			int y = rand.nextInt(500);
-			graph.addVertex(new Circle(10, x, y, graph.getVSize()));
+			graph.addVertex(new Circle(10, x+100, y+100, graph.getVSize()));
 		}
 		for (int i = 0; i < 10; i++) {
 			for (int j = i + 1; j < 10; j++) {
@@ -187,24 +187,22 @@ public class DrawPanel extends JPanel {
 				case 0: {
 					Circle circ = ((HCircle) o).circ;
 					circ.setColor(o.c);	
+					break;
 				}
 				case 1: {
 					Line l = ((HLine) o).l;
 					l.setColor(o.c);	
+					break;
 				}
 					
 				case 2: {
-					Circle[] cArray = new Circle[graph.getVSize()];
+					Circle[] cArray = ((HCircleList) o).newVertices;
 					for(int i=0;i<graph.getVSize();i++) {
-						cArray[i]=getByNumber(i);
+						getByNumber(i).setX(cArray[i].getX());
+						getByNumber(i).setY(cArray[i].getY());
 					}
-					double [][] sumOfForces = ((HCircleList) o).sumOfForces;
-					o.print();
-					for(int i=0;i<cArray.length;i++) {
-				//		System.out.println((int)sumOfForces[i][0]);
-						cArray[i].setX(cArray[i].getX()+(int)sumOfForces[i][0]);
-						cArray[i].setY(cArray[i].getY()+(int)sumOfForces[i][1]);	
-					}
+					System.out.println(objList.size());
+					break;
 				}
 			}
 			if (objList.isEmpty()) {
@@ -237,9 +235,11 @@ public class DrawPanel extends JPanel {
 				return true;
 			}
 			case 1: {
+				if(timer!=null) {
+					timer.stop();
+				}
 				LinkedList<HObject> objList = alg.forceDirectedLayout();
-				System.out.println(objList.size());
-				timer = new Timer(500, new TimerListener(objList));
+				timer = new Timer(25, new TimerListener(objList));
 				timer.start();
 				return true;
 			}
