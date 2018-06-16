@@ -80,14 +80,15 @@ public class Algorithm {
 				d1 = Integer.valueOf((int)sumOfForces[i][1]);
 				d2 = Integer.valueOf(coordsOfLastVertices[i][1]);
 				Integer y = Integer.valueOf((int)(d1+d2));
+		//		System.out.println(x+"\t"+y);
 				((HCircleList) objList.getLast()).setIthCircle(x, y, i);
 				sumOfForces [i][0]=0;
 				sumOfForces [i][1]=0;
-				System.out.println();
 			}
-			if(zaehler>=240) {
+			if(zaehler>=50) {
 				stable = true;
 			}
+			System.out.println(zaehler);
 		}
 		return objList;
 	}
@@ -95,13 +96,13 @@ public class Algorithm {
 		double e_0 = Math.pow(10, -3);
 		double distance =  (Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY-fromY, 2)));
 		double force = 0;
-		if(distance == 0) {
+		if((int)distance < 5) {
 			force = 0;
 
 		} else {
 			force =(1/(4*Math.PI*e_0*Math.pow(distance, 2)));
-
 		}
+		System.out.println(force+"\t"+distance);
 		double force_from_x =  -((force))*(toX-fromX);
 		double force_from_y =  - ((force)*(toY-fromY));
 		double force_to_x =  -((force)*(fromX-toX));
@@ -109,6 +110,7 @@ public class Algorithm {
 		double [] d = {force_from_x,force_from_y, force_to_x, force_to_y};
 		double [] zero = {0,0,0,0};
 		for(int i=0;i<4;i++) {
+
 		}
 		return d;
 	}	/*

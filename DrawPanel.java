@@ -201,7 +201,6 @@ public class DrawPanel extends JPanel {
 						getByNumber(i).setX(cArray[i].getX());
 						getByNumber(i).setY(cArray[i].getY());
 					}
-					System.out.println(objList.size());
 					break;
 				}
 			}
@@ -239,7 +238,7 @@ public class DrawPanel extends JPanel {
 					timer.stop();
 				}
 				LinkedList<HObject> objList = alg.forceDirectedLayout();
-				timer = new Timer(25, new TimerListener(objList));
+				timer = new Timer(200, new TimerListener(objList));
 				timer.start();
 				return true;
 			}
