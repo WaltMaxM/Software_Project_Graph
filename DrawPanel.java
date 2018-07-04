@@ -59,7 +59,7 @@ public class DrawPanel extends JPanel {
 			circleArray[i] = c;
 			i++;
 		}
-		performAlgorithm(1);
+		// performAlgorithm(1);
 	}
 	public void removeGraph() {
 		graph = new Graph<Circle,Line>();
@@ -67,6 +67,7 @@ public class DrawPanel extends JPanel {
 		alg = new Algorithm(graph);
 		repaint();
 	}
+	
 	
 	/*
 	 * What if circleArray is null?
@@ -119,12 +120,12 @@ public class DrawPanel extends JPanel {
 
 	public int createRandomGraph() {
 		graph = new Graph<Circle, Line>();
-
 		Random rand = new Random();
 		for (int i = 0; i < 10; i++) {
 			int x = rand.nextInt(500);
 			int y = rand.nextInt(500);
 			graph.addVertex(new Circle(10, x+100, y+100, graph.getVSize()));
+			System.out.println((x+100)+"\t"+(y+100));
 		}
 		for (int i = 0; i < 10; i++) {
 			for (int j = i + 1; j < 10; j++) {
@@ -132,6 +133,8 @@ public class DrawPanel extends JPanel {
 				if (r > 85) {
 					try {
 						graph.addEdge(new Line(getByNumber(i), getByNumber(j), rand.nextInt(10)), getByNumber(i), getByNumber(j));
+						System.out.println("Kante von "+i+" nach "+j);
+
 					} catch (NullPointerException e){
 						System.out.println("A Scource vertice of an edge does not exist!");
 						return 1;
@@ -149,6 +152,7 @@ public class DrawPanel extends JPanel {
 				if (r > 85) {
 					try {
 						graph.addEdge(new Line(getByNumber(i), getByNumber(j), rand.nextInt(10)), getByNumber(i), getByNumber(j));
+						System.out.println("Kante von "+i+" nach "+j);
 					} catch (NullPointerException e){
 						System.out.println("A Scource vertice of an edge does not exist!");
 						return 1;
@@ -160,6 +164,7 @@ public class DrawPanel extends JPanel {
 				}
 			}
 		}
+		
 		alg = new Algorithm(graph);
 		circleArray = new Circle[graph.getVSize()];
 		int i=0;
@@ -186,12 +191,12 @@ public class DrawPanel extends JPanel {
 			switch(o.whatType) {
 				case 0: {
 					Circle circ = ((HCircle) o).circ;
-					circ.setColor(o.c);	
+					circ.setColor(o.c);
 					break;
 				}
 				case 1: {
 					Line l = ((HLine) o).l;
-					l.setColor(o.c);	
+					l.setColor(o.c);
 					break;
 				}
 					
@@ -209,6 +214,30 @@ public class DrawPanel extends JPanel {
 			}
 			repaint();
 		}
+	}
+	
+	public void testGraphDirected() {
+		int coordArray [] = {567, 303, 532, 256, 443, 539, 110, 571,
+				423,126, 536,326,105,267,121,103,183,268,329,413};
+		int edgeArray[] = {0,5,0,8,1,5,4,5,4,6,5,7,6,7,6,8,9,7,
+				8,2,8,0,7,3,6,4,6,3,5,2,3,1};
+		for (int i=0;i<coordArray.length;i+=2) {
+			graph.addVertex(new Circle(10, coordArray[i], coordArray[i+1], graph.getVSize()));
+		}
+		for (int i=0;i<edgeArray.length;i+=2) {
+			graph.addEdge(new Line(getByNumber(edgeArray[i]), getByNumber(edgeArray[i+1]), 0),
+					getByNumber(edgeArray[i]), getByNumber(edgeArray[i+1]));
+
+		}
+		alg = new Algorithm(graph);
+		circleArray = new Circle[graph.getVSize()];
+		int i=0;
+		for(Circle c : graph.vertexSet()) {
+			circleArray[i] = c;
+			i++;
+		}
+		this.performAlgorithm(1);
+		repaint();
 	}
 /*
  * What if target of src does not exist?
@@ -238,7 +267,7 @@ public class DrawPanel extends JPanel {
 					timer.stop();
 				}
 				LinkedList<HObject> objList = alg.forceDirectedLayout();
-				timer = new Timer(200, new TimerListener(objList));
+				timer = new Timer(40, new TimerListener(objList));
 				timer.start();
 				return true;
 			}

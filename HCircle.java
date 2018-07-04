@@ -6,7 +6,7 @@ public class HCircle extends HObject {
 	public HCircle (Color c, Circle circ) {
 		super(c);
 		this.circ = circ;
-		this.whatType = 1;
+		this.whatType = 0;
 	}
 	public void print() {
 		

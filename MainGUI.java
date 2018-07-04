@@ -76,6 +76,7 @@ public class MainGUI {
 					}
 				}
 			}
+				
 		});
 		JButton btnRemoveGraph = new JButton("Remove Graph");
 		btnRemoveGraph.addActionListener(new ActionListener() {
@@ -108,6 +109,7 @@ public class MainGUI {
 
 		final JTextField txtC1 = new JTextField(1);
 		final JTextField txtC2 = new JTextField(1);
+		final JTextField txtC3 = new JTextField(1);
 
 		JButton btnCancel = new JButton("cancel");
 		btnCancel.addActionListener(new ActionListener() {
@@ -125,13 +127,15 @@ public class MainGUI {
 			public void actionPerformed(ActionEvent e) {
 				int cid1 = Integer.parseInt(txtC1.getText());
 				int cid2 = Integer.parseInt(txtC2.getText());
-				drawPanel.addLine(cid1, cid2, 0);
+				int cid3 = Integer.parseInt(txtC3.getText());
+				drawPanel.addLine(cid1, cid2, cid3);
 				frame.dispose();
 			}
 		});
 
 		frame.add(txtC1);
 		frame.add(txtC2);
+		frame.add(txtC3);
 		frame.add(btnCancel);
 		frame.add(btnAddLine);
 		frame.setSize(300, 100);

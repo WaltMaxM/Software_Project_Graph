@@ -13,6 +13,7 @@ import java.util.TreeMap;
  */
 
 
+
 public class Algorithm {
 	private Graph<Circle, Line> graph;
 	private LinkedList<HObject> objList = new LinkedList<HObject>();
@@ -26,7 +27,6 @@ public class Algorithm {
 	
 	public LinkedList<HObject> forceDirectedLayout() {
 		
-		//Careful! not initilised!
 		Circle[] cArray = new Circle[graph.getVSize()];
 		for(int i=0;i<graph.getVSize();i++) {
 			cArray[i]=getByNumber(i);
@@ -60,49 +60,54 @@ public class Algorithm {
 				}
 			}
 			for(Line l:graph.edgeSet()) {
-				double [] hArray = computeEdgeForce(coordsOfLastVertices[l.getC1().getNumber()][0], coordsOfLastVertices[l.getC1().getNumber()][1], coordsOfLastVertices[l.getC2().getNumber()][1],coordsOfLastVertices[l.getC2().getNumber()][1]);
+				double [] hArray = computeEdgeForce(coordsOfLastVertices[l.getC1().getNumber()][0], coordsOfLastVertices[l.getC1().getNumber()][1],
+						coordsOfLastVertices[l.getC2().getNumber()][0],coordsOfLastVertices[l.getC2().getNumber()][1]);
 				sumOfForces[l.getC1().getNumber()][0]+=hArray[0];
 				sumOfForces[l.getC1().getNumber()][1]+=hArray[1];
 				sumOfForces[l.getC2().getNumber()][0]+=hArray[2];
 				sumOfForces[l.getC2().getNumber()][1]+=hArray[3];
 			}
-			for(int i=0;i<graph.getVSize();i++) {
-		//		System.out.println((int) sumOfForces[i][0]);
-			}
 			
 			for(int i=0;i<cArray.length;i++) {
-				if(cArray[i].getX() != cArray[i].getX()+(int)sumOfForces[i][0] || cArray[i].getY() != (int)sumOfForces[i][1]) {
+				int j = -1;
+				if((int)sumOfForces[i][0] > 1 || (int)sumOfForces[i][1]>1) {
 					stable = false;
 				}
-				Integer d1 = Integer.valueOf((int)sumOfForces[i][0]);
-				Integer d2 = Integer.valueOf( (coordsOfLastVertices[i][0]));
+				Integer d1,d2;
+				if(Math.abs((int)sumOfForces[i][0]) > 1) {
+					 d1 = Integer.valueOf((int)sumOfForces[i][0]);
+				} else {
+					 d1 = 0;
+				}
+				d2 = Integer.valueOf( (coordsOfLastVertices[i][0]));
 				Integer x = Integer.valueOf((d1+d2));
-				d1 = Integer.valueOf((int)sumOfForces[i][1]);
+				if(Math.abs((int)sumOfForces[i][1])>1) {
+					 d1 = Integer.valueOf((int)sumOfForces[i][1]);
+				} else {
+					 d1 = 0;
+				}
 				d2 = Integer.valueOf(coordsOfLastVertices[i][1]);
-				Integer y = Integer.valueOf((int)(d1+d2));
-		//		System.out.println(x+"\t"+y);
+				Integer y = Integer.valueOf((d1+d2));
 				((HCircleList) objList.getLast()).setIthCircle(x, y, i);
 				sumOfForces [i][0]=0;
 				sumOfForces [i][1]=0;
 			}
-			if(zaehler>=50) {
+			if(zaehler>=200) {
 				stable = true;
 			}
-			System.out.println(zaehler);
 		}
 		return objList;
 	}
 	public double [] computeVertexForce(int fromX, int fromY, int toX, int toY, int number, int number2) {
-		double e_0 = Math.pow(10, -3);
+		double e_0 = 4*Math.pow(10, -2);
 		double distance =  (Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY-fromY, 2)));
 		double force = 0;
-		if((int)distance < 5) {
+		if((int)distance < 1) {
 			force = 0;
 
 		} else {
-			force =(1/(4*Math.PI*e_0*Math.pow(distance, 2)));
+			force =(1/(e_0*Math.pow(distance, 2)));
 		}
-		System.out.println(force+"\t"+distance);
 		double force_from_x =  -((force))*(toX-fromX);
 		double force_from_y =  - ((force)*(toY-fromY));
 		double force_to_x =  -((force)*(fromX-toX));
@@ -121,13 +126,13 @@ public class Algorithm {
 	public double [] computeEdgeForce(int fromX, int fromY, int toX, int toY) {
 		double distance =  (Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY-fromY, 2)));
 		double force = 0;
-		if(distance-50d > 1) {
-			force = (distance - 50d)*Math.pow(10, -3);
+		if(distance-100d > 1) {
+			force = 4*(distance - 100d)*Math.pow(10, -2);
 		}
-		double force_from_x =   (((force))*(toX-fromX));
-		double force_from_y =   ((force)*(toY-fromY));
-		double force_to_x =  ((force)*(fromX-toX));
-		double force_to_y =   ((force)*(fromY-toY));
+		double force_from_x =   force*Integer.signum(toX-fromX);
+		double force_from_y =   force*Integer.signum(toY-fromY);
+		double force_to_x =  -force_from_x;
+		double force_to_y =   -force_from_y;
 		double [] d = {force_from_x,force_from_y, force_to_x, force_to_y};
 		double [] zero = {0,0,0,0};
 		return d;
